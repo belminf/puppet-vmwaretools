@@ -36,10 +36,10 @@ class vmware::tools {
 		service { 'vmware-tools':
 			provider => 'base',
 			ensure => running,
-			start => "${service_cmd} start",
-			stop => "${service_cmd} stop",
-			status => "${service_cmd} status",
-			restart => "${service_cmd} restart",
+			start => "/usr/bin/sh -c '${service_cmd} start'",
+			stop => "/usr/bin/sh -c '${service_cmd} stop'",
+			status => "/usr/bin/sh -c '${service_cmd} status'",
+			restart => "/usr/bin/sh -c '${service_cmd} restart'",
 		}
 
 	} else {
