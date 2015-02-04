@@ -1,6 +1,6 @@
 # puppet-vmwaretools_osp
 
-Puppet module for installing VMware tools via OSP.
+Puppet module for installing VMware tools via OSP. See manifests/init.pp for more.
 
 Resources:
 --
