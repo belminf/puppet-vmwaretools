@@ -11,12 +11,6 @@
 #
 # class { 'vmware::tools': }
 #
-# == Resources:
-#
-# https://www.vmware.com/support/packages
-# http://packages.vmware.com/tools/esx/index.html
-# http://packages.vmware.com/tools/docs/manuals/osp-esxi-51-install-guide.pdf
-#
 
 class vmwaretools_osp (
     $repo_url             = $vmwaretools_osp::params::repo_url,
