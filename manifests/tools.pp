@@ -21,16 +21,23 @@
 class vmware::tools {
 
     $os_version = "${::osfamily} ${::operatingsystemmajrelease}"
-    if $os_version =~ /^RedHat (6|7)$/ {
-        $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel6/${::architecture}/"
-        $service_cmd = '/etc/vmware-tools/init/vmware-tools-services'
-    } else {
-        fail("No repository for OS: ${os_version}")
+    case $os_version {
+        /^RedHat (6|7)$/: {
+            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel6/${::architecture}/"
+            $service_cmd = '/etc/vmware-tools/init/vmware-tools-services'
+        }
+        /^RedHat (4|5)$/: {
+            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::operatingsystemmajrelease}/${::architecture}/"
+            $service_cmd = '/etc/vmware-tools/init/vmware-tools-services'
+        }
+        default: {
+            fail("No repository for OS: ${os_version}")
+        }
     }
 
     yumrepo { 'vmware-osp':
         baseurl  => $repo_url,
-        descr    => 'VMware OSD repository',
+        descr    => 'VMware OSP repository',
         enabled  => 1,
         gpgcheck => 0,
     }
