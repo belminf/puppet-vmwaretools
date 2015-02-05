@@ -14,7 +14,7 @@
 
 class vmwaretools_osp (
     $repo_url              = $vmwaretools_osp::params::repo_url,
-    $osp_package           = $vmwaretools_osp::params::osp_package,
+    $osp_packages          = $vmwaretools_osp::params::osp_packages,
     $conflicting_packages  = $vmwaretools_osp::params::conflicting_packages,
     $service_name          = $vmwaretools_osp::params::service_name,
     $service_enable        = $vmwaretools_osp::params::service_enable,
@@ -37,17 +37,17 @@ class vmwaretools_osp (
         exec { 'remove tarball':
             command => "${tarball_installer}${tarball_uninstall_opt}",
             onlyif  => "test -f ${tarball_installer}",
-            before  => Package[$osp_package],
+            before  => Package[$osp_packages],
             path    => '/usr/bin:/bin',
         }
     }
 
     package { $conflicting_packages:
         ensure => absent,
-        before => Package[$osp_package]
+        before => Package[$osp_packages]
     }
 
-    package { $osp_package:
+    package { $osp_packages:
         ensure  => latest,
         require => Yumrepo['vmware-osp'],
         before  => Service[$service_name]
