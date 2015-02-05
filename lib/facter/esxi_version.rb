@@ -7,7 +7,7 @@ Facter.add(:esxi_version) do
     bios_lookup_table = {
       'E72C0' => '5.0',
       'EA0C0' => '5.1',
-      'EA050' => '5.2'
+      'EA050' => '5.5'
     }
     bios_lookup_table.default = 'unknown:untranslated_version'
     dmi_path = Facter::Util::Resolution.exec('which dmidecode 2> /dev/null')
