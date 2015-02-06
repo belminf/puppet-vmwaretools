@@ -8,9 +8,9 @@ class vmwaretools_osp::params {
                 'vmware-tools-esx-nox',
                 'kmod-vmware-tools-pvscsi',
                 'kmod-vmware-tools-vmci',
-                'kmod-vmware-tools-vmsync',
                 'kmod-vmware-tools-vmxnet',
                 'kmod-vmware-tools-vmxnet3',
+                'kmod-vmware-tools-vmmemctl',
             ]
             $service_name = 'vmware-tools-services'
             $tarball_installer = '/etc/vmware-tools/installer.sh'
@@ -30,6 +30,7 @@ class vmwaretools_osp::params {
                 'kmod-vmware-tools-vmsync',
                 'kmod-vmware-tools-vmxnet',
                 'kmod-vmware-tools-vmxnet3',
+                'kmod-vmware-tools-vmmemctl',
             ]
             $service_name = 'vmware-tools-services'
             $service_enable = true
