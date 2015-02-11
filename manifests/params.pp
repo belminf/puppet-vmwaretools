@@ -1,48 +1,41 @@
 class vmwaretools_osp::params {
 
     $os_version = "${::osfamily} ${::lsbmajdistrelease}"
-    case $os_version {
-        /^RedHat 6$/: {
-            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel6/${::architecture}/"
+    
+    # General settings
+    $tarball_installer = '/etc/vmware-tools/installer.sh'
+    $tarball_uninstall_opt = ' uninstall'
+    $conflicting_packages = [
+        'open-vm-tools',
+        'VMwareTools'
+    ]
+    $service_enable = true
+
+
+    # ESXi specific settings
+    case "${::esxi_version} - ${os_version}" {
+        /^5.(1|5) - RedHat (5|6)$/: {
+            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${::architecture}/"
             $osp_packages = [
                 'vmware-tools-esx-nox',
-                'kmod-vmware-tools-pvscsi',
-                'kmod-vmware-tools-vmci',
-                'kmod-vmware-tools-vmxnet',
-                'kmod-vmware-tools-vmxnet3',
-                'kmod-vmware-tools-vmmemctl',
+                'vmware-tools-esx-kmods',
             ]
             $service_name = 'vmware-tools-services'
-            $tarball_installer = '/etc/vmware-tools/installer.sh'
-            $tarball_uninstall_opt = ' uninstall'
-            $conflicting_packages = [
-                'open-vm-tools',
-                'VMwareTools'
-            ]
-            $service_provider = 'upstart'
+            if $os_version == 'RedHat 6' {
+                $service_provider = 'upstart'
+            }
         }
-        /^RedHat 5$/: {
-            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel5/${::architecture}/"
+        /^4.(0|1) - RedHat (5|6)$/: {
+            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${::architecture}/"
             $osp_packages = [
-                'vmware-tools-esx-nox',
-                'kmod-vmware-tools-pvscsi',
-                'kmod-vmware-tools-vmci',
-                'kmod-vmware-tools-vmsync',
-                'kmod-vmware-tools-vmxnet',
-                'kmod-vmware-tools-vmxnet3',
-                'kmod-vmware-tools-vmmemctl',
+                'vmware-tools-nox',
+                'vmware-open-vm-tools-kmod',
             ]
-            $service_name = 'vmware-tools-services'
-            $service_enable = true
-            $tarball_installer = '/etc/vmware-tools/installer.sh'
-            $tarball_uninstall_opt = ' uninstall'
-            $conflicting_packages = [
-                'open-vm-tools',
-                'VMwareTools'
-            ]
+            $service_name = 'vmware-tools'
         }
         default: {
-            fail("No repository for OS: ${os_version}")
+            fail("No setup for ESXi and OS: ${::esxi_version} ${os_version}")
         }
     }
+
 }
