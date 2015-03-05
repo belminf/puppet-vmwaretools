@@ -44,13 +44,12 @@ class vmwaretools_osp (
 
     package { $conflicting_packages:
         ensure => absent,
-        before => Package[$osp_packages]
+        before => Package[$osp_packages],
     }
 
     package { $osp_packages:
         ensure  => latest,
         require => Yumrepo['vmware-osp'],
-        before  => Service[$service_name]
     }
 
     service { $service_name:
@@ -60,5 +59,6 @@ class vmwaretools_osp (
         start    => $service_start,
         stop     => $service_stop,
         status   => $service_status,
+        require  => Package[$osp_packages],
     }
 }

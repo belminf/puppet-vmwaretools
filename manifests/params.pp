@@ -10,12 +10,17 @@ class vmwaretools_osp::params {
         'VMwareTools'
     ]
     $service_enable = true
-
+    
+    case $::architecture {
+        'x86_64': { $arch = 'x86_64' }
+        'i386':   { $arch = 'i686' }
+        default:  { fail("No support for ${::architecture}" ) }
+    }
 
     # ESXi specific settings
     case "${::esxi_version} - ${os_version}" {
         /^5.(1|5) - RedHat (5|6)$/: {
-            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${::architecture}/"
+            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${arch}/"
             $osp_packages = [
                 'vmware-tools-esx-nox',
                 'vmware-tools-esx-kmods',
@@ -26,7 +31,7 @@ class vmwaretools_osp::params {
             }
         }
         /^4.(0|1) - RedHat (5|6)$/: {
-            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${::architecture}/"
+            $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${arch}/"
             $osp_packages = [
                 'vmware-tools-nox',
                 'vmware-open-vm-tools-kmod',
