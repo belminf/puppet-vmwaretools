@@ -37,7 +37,7 @@ class vmwaretools::params {
             # ESXi specific settings
             case $::esxi_version {
                 /^5.(1|5)$/: {
-                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${arch}/"
+                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::operatingsystemmajrelease}/${arch}/"
                     $required_packages = [
                         'vmware-tools-esx-nox',
                         'vmware-tools-esx-kmods',
@@ -48,7 +48,7 @@ class vmwaretools::params {
                     }
                 }
                 /^4.(0|1)$/: {
-                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::lsbmajdistrelease}/${arch}/"
+                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::operatingsystemmajrelease}/${arch}/"
                     $required_packages = [
                         'vmware-tools-nox',
                         'vmware-open-vm-tools-kmod',
