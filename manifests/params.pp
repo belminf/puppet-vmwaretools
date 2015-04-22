@@ -27,16 +27,17 @@ class vmwaretools::params {
                 'open-vm-tools',
                 'VMwareTools'
             ]
-
-            case $::architecture {
-                'x86_64': { $arch = 'x86_64' }
-                'i386':   { $arch = 'i686' }
-                default:  { fail("No support for ${::architecture}" ) }
-            }
         
             # ESXi specific settings
             case $::esxi_version {
                 /^5.(1|5)$/: {
+
+                    case $::architecture {
+                        'x86_64': { $arch = 'x86_64' }
+                        'i386':   { $arch = 'i386' }
+                        default:  { fail("No support for ${::architecture}" ) }
+                    }
+
                     $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::operatingsystemmajrelease}/${arch}/"
                     $required_packages = [
                         'vmware-tools-esx-nox',
@@ -48,6 +49,13 @@ class vmwaretools::params {
                     }
                 }
                 /^4.(0|1)$/: {
+
+                    case $::architecture {
+                        'x86_64': { $arch = 'x86_64' }
+                        'i386':   { $arch = 'i686' }
+                        default:  { fail("No support for ${::architecture}" ) }
+                    }
+
                     $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::operatingsystemmajrelease}/${arch}/"
                     $required_packages = [
                         'vmware-tools-nox',
