@@ -31,22 +31,29 @@ class vmwaretools (
 
     if $::virtual == 'vmware' {
 
+        # If we have a service, do everything before that
+        if $service_name {
+            $uninstall_before = Service[$service_name]
+        } else {
+            $uninstall_before = undef
+        }
+
         # Tarball cleanup
         if $tarball_installer {
             exec { 'remove tarball':
                 command => "${tarball_installer}${tarball_uninstall_opt}",
                 onlyif  => "test -f ${tarball_installer}",
                 path    => '/usr/bin:/bin',
-                before  => Service[$service_name],
+                before  => $uninstall_before,
             }
         }
 
         # Uninstall conflicting
         if $conflicting_packages {
             package { $conflicting_packages:
-                ensure   => purged,
-                provider => 'yum',
-                before   => Service[$service_name],
+                ensure   => absent,
+                provider => 'rpm',
+                before   => $uninstall_before,
             }
         }
 
@@ -57,7 +64,7 @@ class vmwaretools (
                 descr    => 'VMware Tools',
                 enabled  => 1,
                 gpgcheck => 0,
-                before   => Service[$service_name],
+                before   => $uninstall_before,
             }
         }
     
@@ -65,7 +72,7 @@ class vmwaretools (
         if $required_packages {
             package { $required_packages:
                 ensure => latest,
-                before => Service[$service_name],
+                before => $uninstall_before,
             }
         }
 
