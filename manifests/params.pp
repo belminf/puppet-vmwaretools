@@ -1,6 +1,11 @@
 class vmwaretools::params {
 
-    $os_version = "${::osfamily} ${::operatingsystemmajrelease}"
+    if $::operatingsystemmajrelease {
+        $major_release = $::operatingsystemmajrelease
+    } else {
+        $major_release = $::lsbmajdistrelease
+    }
+    $os_version = "${::osfamily} ${major_release}"
     
     # Tarball cleanup
     $tarball_installer = '/etc/vmware-tools/installer.sh'
@@ -38,7 +43,7 @@ class vmwaretools::params {
                         default:  { fail("No support for ${::architecture}" ) }
                     }
 
-                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::operatingsystemmajrelease}/${arch}/"
+                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${major_release}/${arch}/"
                     $required_packages = [
                         'vmware-tools-esx-nox',
                         'vmware-tools-esx-kmods',
@@ -56,7 +61,7 @@ class vmwaretools::params {
                         default:  { fail("No support for ${::architecture}" ) }
                     }
 
-                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${::operatingsystemmajrelease}/${arch}/"
+                    $repo_url = "http://packages.vmware.com/tools/esx/${::esxi_version}latest/rhel${major_release}/${arch}/"
                     $required_packages = [
                         'vmware-tools-nox',
                         'vmware-open-vm-tools-kmod',

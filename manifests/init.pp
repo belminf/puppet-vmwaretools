@@ -25,19 +25,19 @@ class vmwaretools (
     $tarball_uninstall_opt = $vmwaretools::params::tarball_uninstall_opt
 ) inherits vmwaretools::params {
 
-    if $::virtual == 'vmware' {
+    if versioncmp($::puppetversion, '3.6.0') >= 0 {
+        Package { allow_virtual => true, }
+    }
 
-        Package {
-            allow_virtual => false,
-        }
+    if $::virtual == 'vmware' {
 
         # Tarball cleanup
         if $tarball_installer {
             exec { 'remove tarball':
                 command => "${tarball_installer}${tarball_uninstall_opt}",
                 onlyif  => "test -f ${tarball_installer}",
-                before  => Package[$required_packages],
                 path    => '/usr/bin:/bin',
+                before  => Service[$service_name],
             }
         }
 
@@ -45,8 +45,8 @@ class vmwaretools (
         if $conflicting_packages {
             package { $conflicting_packages:
                 ensure   => purged,
-                before   => Package[$required_packages],
                 provider => 'yum',
+                before   => Service[$service_name],
             }
         }
 
@@ -57,14 +57,15 @@ class vmwaretools (
                 descr    => 'VMware Tools',
                 enabled  => 1,
                 gpgcheck => 0,
-                before   => Package[$required_packages],
+                before   => Service[$service_name],
             }
         }
     
         # Add packages
         if $required_packages {
             package { $required_packages:
-                ensure  => latest,
+                ensure => latest,
+                before => Service[$service_name],
             }
         }
 
@@ -77,7 +78,6 @@ class vmwaretools (
                 start    => $service_start,
                 stop     => $service_stop,
                 status   => $service_status,
-                require  => Package[$required_packages],
             }
         }
     }
