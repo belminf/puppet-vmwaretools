@@ -25,10 +25,17 @@ class vmwaretools (
     $tarball_uninstall_opt = $vmwaretools::params::tarball_uninstall_opt
 ) inherits vmwaretools::params {
 
+    if versioncmp($::puppetversion, '3.6.0') >= 0 {
+        Package { allow_virtual => true, }
+    }
+
     if $::virtual == 'vmware' {
 
-        Package {
-            allow_virtual => false,
+        # If we have a service, do everything before that
+        if $service_name {
+            $uninstall_before = Service[$service_name]
+        } else {
+            $uninstall_before = undef
         }
 
         # Tarball cleanup
@@ -36,17 +43,17 @@ class vmwaretools (
             exec { 'remove tarball':
                 command => "${tarball_installer}${tarball_uninstall_opt}",
                 onlyif  => "test -f ${tarball_installer}",
-                before  => Package[$required_packages],
                 path    => '/usr/bin:/bin',
+                before  => $uninstall_before,
             }
         }
 
         # Uninstall conflicting
         if $conflicting_packages {
             package { $conflicting_packages:
-                ensure   => purged,
-                before   => Package[$required_packages],
-                provider => 'yum',
+                ensure   => absent,
+                provider => 'rpm',
+                before   => $uninstall_before,
             }
         }
 
@@ -57,14 +64,15 @@ class vmwaretools (
                 descr    => 'VMware Tools',
                 enabled  => 1,
                 gpgcheck => 0,
-                before   => Package[$required_packages],
+                before   => $uninstall_before,
             }
         }
     
         # Add packages
         if $required_packages {
             package { $required_packages:
-                ensure  => latest,
+                ensure => latest,
+                before => $uninstall_before,
             }
         }
 
@@ -77,7 +85,6 @@ class vmwaretools (
                 start    => $service_start,
                 stop     => $service_stop,
                 status   => $service_status,
-                require  => Package[$required_packages],
             }
         }
     }
