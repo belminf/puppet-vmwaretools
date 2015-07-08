@@ -1,6 +1,14 @@
+# 
+
 class vmwaretools::params {
 
-    $os_version = "${::osfamily} ${::operatingsystemmajrelease}"
+    if $::operatingsystemmajrelease {
+        $os_version = "${::osfamily} ${::operatingsystemmajrelease}"
+    } elsif $::lsbmajdistrelease {
+        $os_version = "${::osfamily} ${::lsbmajdistrelease}"
+    } else {
+            fail('Unable to determine major release')
+    }
     
     # Tarball cleanup
     $tarball_installer = '/etc/vmware-tools/installer.sh'
