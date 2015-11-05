@@ -9,6 +9,7 @@ Facter.add(:esxi_version) do
       'EA2E0' => '4.1',
       'E72C0' => '5.0',
       'EA0C0' => '5.1',
+      'E9AB0' => '5.1',
       'EA050' => '5.5'
     }
     dmi_path = Facter::Util::Resolution.exec('which dmidecode 2> /dev/null')
