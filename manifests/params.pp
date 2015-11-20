@@ -82,8 +82,5 @@ class vmwaretools::params {
         default: {
             notice("Unsupported OS: ${os_version}")
         }
-        
     }
-    
-
 }

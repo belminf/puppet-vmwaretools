@@ -25,10 +25,6 @@ class vmwaretools (
     $tarball_uninstall_opt = $vmwaretools::params::tarball_uninstall_opt
 ) inherits vmwaretools::params {
 
-    if versioncmp($::puppetversion, '3.6.0') >= 0 {
-        Package { allow_virtual => true, }
-    }
-
     if $::virtual == 'vmware' {
 
         # If we have a service, do everything before that
@@ -51,9 +47,10 @@ class vmwaretools (
         # Uninstall conflicting
         if $conflicting_packages {
             package { $conflicting_packages:
-                ensure   => absent,
-                provider => 'rpm',
-                before   => $uninstall_before,
+                ensure        => absent,
+                provider      => 'rpm',
+                before        => $uninstall_before,
+                allow_virtual => true,
             }
         }
 
@@ -71,8 +68,9 @@ class vmwaretools (
         # Add packages
         if $required_packages {
             package { $required_packages:
-                ensure => latest,
-                before => $uninstall_before,
+                ensure        => latest,
+                before        => $uninstall_before,
+                allow_virtual => true,
             }
         }
 
