@@ -28,6 +28,7 @@ class vmwaretools::params {
                 'vmware-tools-nox',
             ]
             $required_packages = 'open-vm-tools'
+            $service_name = 'vmtoolsd'
         }
 
         /^RedHat (5|6)$/: {
