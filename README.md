@@ -2,6 +2,14 @@
 
 Puppet module for installing VMware tools via OSP. See [init.pp](manifests/init.pp) for more.
 
+Adding new version:
+--
+Get address from the VM:
+
+ dmidecode -t bios 2> /dev/null | grep Address
+
+Map it to a version in [facter code](lib/facter/esxi_version.rb).
+
 Resources:
 --
 - https://www.vmware.com/support/packages
