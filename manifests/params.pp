@@ -40,7 +40,7 @@ class vmwaretools::params {
         
             # ESXi specific settings
             case $::esxi_version {
-                /^5.(1|5)$/: {
+                /^(5.(1|5)|6.0)$/: {
 
                     case $::architecture {
                         'x86_64': { $arch = 'x86_64' }
